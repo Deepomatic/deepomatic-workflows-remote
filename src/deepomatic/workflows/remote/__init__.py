@@ -18,6 +18,10 @@ class RemoteWorkflowClient:
         self.http = AuthorizedSession(credentials)
 
     def remote_workflow(self, files, data):
+        # Pass nested json a json string
+        for to_encode in ["wo_metadata", "analysis_metadata", "work_order_types"]:
+            if to_encode in data:
+                data[to_encode] = json.dumps(data[to_encode])
         response = self.http.post(f"{self.api_url}", files=files, data=data, headers={"X-API-KEY": self.api_key})
         return response
 
